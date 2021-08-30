@@ -1,6 +1,9 @@
 import "./App.css";
+import { MapContainer, Marker, TileLayer, Popup } from "react-leaflet";
+import { useState } from "react";
 
-function App() {
+const App = () => {
+  const [position, setPosition] = useState([28.984463, 77.706413]);
   return (
     <div className="App">
       <header className="App-header">
@@ -10,7 +13,7 @@ function App() {
             <input type="text" placeholder="Search for any IP address or domain" className="head-input-text"></input>
             <div className="head-input-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14">
-                <path fill="none" stroke="#FFF" stroke-width="3" d="M2 1l6 6-6 6" />
+                <path fill="none" stroke="#FFF" strokeWidth="3" d="M2 1l6 6-6 6" />
               </svg>
             </div>
             <div className="head-details">
@@ -33,10 +36,13 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="map-area"></div>
+        <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+          <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={position}></Marker>
+        </MapContainer>
       </header>
     </div>
   );
-}
+};
 
 export default App;
