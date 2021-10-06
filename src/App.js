@@ -1,36 +1,16 @@
 import "./App.css";
-import { MapContainer, Marker, TileLayer, Popup, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, Popup, useMapEvents, useMap } from "react-leaflet";
 import { useEffect, useState } from "react";
 
 const API_KEY = process.env.REACT_APP_GEO_API_KEY;
 
 const App = () => {
-  const [position, setPosition] = useState([28.984463, 77.706413]);
-  const [ip, setIp] = useState(null);
+  const [position, setPosition] = useState([0, 0]);
+  const [ip, setIp] = useState("192.212.174.101");
   const [locationData, setLocationData] = useState(null);
-
-  function LocationMarker() {
-    // const [position, setPosition] = useState(null);
-    const map = useMapEvents({
-      click() {
-        map.locate();
-      },
-      locationfound(e) {
-        setPosition(e.latlng);
-        map.flyTo(e.latlng, map.getZoom());
-      },
-    });
-
-    return position === null ? null : (
-      <Marker position={position}>
-        <Popup>You are here</Popup>
-      </Marker>
-    );
-  }
 
   const fetchLocationDetails = () => {
     const fetchPromise = fetch(`https://geo.ipify.org/api/v1?apiKey=${API_KEY}&ipAddress=${ip}`);
-
     fetchPromise
       .then((res) => res.json())
       .then((res) => {
@@ -39,11 +19,15 @@ const App = () => {
       });
   };
 
-  // useEffect(() => {
-  //   fetchLocationDetails();
-  // }, []);
+  useEffect(() => {
+    fetchLocationDetails();
+  }, []);
 
-  console.log(locationData);
+  function ChangeView({ center, zoom }) {
+    const map = useMap();
+    map.setView(center, zoom);
+    return null;
+  }
 
   return (
     <div className="App">
@@ -52,7 +36,7 @@ const App = () => {
           <div style={{ paddingTop: "2rem" }}>IP Address Tracker</div>
           <div className="head-input">
             <div className="head-input-input">
-              <input type="text" placeholder="Search for any IP address or domain" className="head-input-text" value={ip} onChange={(e) => setIp(e.target.value)}></input>
+              <input type="text" placeholder={ip} className="head-input-text" onChange={(e) => setIp(e.target.value)}></input>
               <button onClick={fetchLocationDetails} className="head-input-button">
                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14">
                   <path fill="none" stroke="#FFF" strokeWidth="3" d="M2 1l6 6-6 6" />
@@ -66,23 +50,25 @@ const App = () => {
               </div>
               <div className="details-item brdr">
                 <div className="item-type">LOCATION</div>
-                <div className="item-value">{`${locationData?.location?.city}, ${locationData?.location?.region}`}</div>
+                <div className="item-value">{`${locationData?.location ? `${locationData?.location?.city}, ${locationData?.location?.region}` : ""}`}</div>
               </div>
               <div className="details-item brdr">
                 <div className="item-type">TIMEZONE</div>
-                <div className="item-value">{`UTC ${locationData?.location?.timezone}`}</div>
+                <div className="item-value">{`${locationData?.location ? `UTC ${locationData?.location?.timezone}` : ""}`}</div>
               </div>
               <div className="details-item brdr">
                 <div className="item-type">ISP</div>
-                <div className="item-value">{locationData?.isp}</div>
+                <div className="item-value">{locationData?.isp || ""}</div>
               </div>
             </div>
           </div>
         </div>
-        <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+        <MapContainer center={position} zoom={13}>
+          <ChangeView center={position} zoom={13} />
           <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {/* <LocationMarker /> */}
-          <Marker position={position}></Marker>
+          <Marker position={position}>
+            <Popup>This is the IP Location</Popup>
+          </Marker>
         </MapContainer>
       </header>
     </div>
