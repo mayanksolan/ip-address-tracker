@@ -32,20 +32,26 @@
 .head-input {
   display: inline;
 }
-.head-input-text {
+.head-input-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 2rem;
+}
+.head-input-text {
   padding: 1rem;
   width: 250px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   border: none;
 }
-.head-input-icon {
-  display: inline;
-  padding: 0.8rem 1rem 1rem;
+.head-input-button {
   background-color: black;
+  outline: none;
+  border: none;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  padding: 1rem;
 }
 
 .head-details {
@@ -83,6 +89,20 @@
 
 @media only screen and (min-width: 1200px) {
   .head-input-icon {
-    padding: 0.3rem 1rem 0.8rem;
+    padding: 0.9rem 1rem 0.8rem;
+  }
+  .head-details {
+    display: flex;
+    height: 150px;
+  }
+  .details-item {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-width: 300px;
+    padding-top: 0;
+  }
+  .brdr {
+    border-left: lightgray solid 1px;
   }
 }
