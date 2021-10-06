@@ -6,7 +6,7 @@ const API_KEY = process.env.REACT_APP_GEO_API_KEY;
 
 const App = () => {
   const [position, setPosition] = useState([0, 0]);
-  const [ip, setIp] = useState("192.212.174.101");
+  const [ip, setIp] = useState("");
   const [locationData, setLocationData] = useState(null);
 
   const fetchLocationDetails = () => {
@@ -20,8 +20,17 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchLocationDetails();
+    const myIpPromise = fetch("https://geolocation-db.com/json/");
+    myIpPromise
+      .then((res) => res.json())
+      .then((res) => {
+        setIp(res.IPv4);
+      });
   }, []);
+
+  useEffect(() => {
+    fetchLocationDetails();
+  }, [ip]);
 
   function ChangeView({ center, zoom }) {
     const map = useMap();
